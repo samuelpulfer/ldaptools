@@ -39,7 +39,7 @@ def listdn(result):
 		print r[0]
 
 def test(argv):
-	init()
+	#init() # FIXME, this method moved to the main function of the program
 	conn = connect()
 	filter = "(|(objectClass=group)(objectClass=posixGroup)(objectClass=organizationalUnit))"
 	res  = search(conn, filter)

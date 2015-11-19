@@ -8,7 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'lib'))
 
 # import modules
 import ldaptools
-import dir as dirtools
+import dirtools
 
 def read_config():
 	""" this method looks for a config file in etc/`hostname`.py. The file 
