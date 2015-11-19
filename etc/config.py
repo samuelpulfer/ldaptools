@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 
-import os
+import os, sys
 
 # log files
 modification_logfile="var/modification.log"
@@ -23,12 +23,15 @@ sync = [
 	},
 ]
 
-userdn = "CN=Medizintechnik Testaccount,OU=Admin,OU=Users,OU=MTInf,OU=USB,DC=ms,DC=uhbs,DC=ch"
-_pwfile = os.path.realpath(__file__)) + "/" + 'user.pass'
-with open(os.path.dirname(_pwfile) as f: 
-	userpw = f.read()
+userdn = "CN=A_WunderlinS,OU=Admin,OU=Users,OU=MQInf,OU=USB,DC=ms,DC=uhbs,DC=ch"
+_pwfile = os.path.dirname(os.path.realpath(__file__)) + "/" + 'user.pass'
+try:
+	_f = open(_pwfile)
+	userpw = _f.read().strip()
+	_f.close()
 except IOError:
 	print('Please create the password file ' + _pwfile)
+	sys.exit(1)
 
 # Domain infos
 baseDN = "ou=USB,dc=ms,dc=uhbs,dc=ch"
