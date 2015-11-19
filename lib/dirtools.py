@@ -40,7 +40,7 @@ def listdn(result):
 
 def test(argv):
 	#init() # FIXME, this method moved to the main function of the program
-	conn = connect()
+	conn = connect(argv[1], argv[2], argv[3])
 	filter = "(|(objectClass=group)(objectClass=posixGroup)(objectClass=organizationalUnit))"
 	res  = search(conn, filter)
 	listdn(res)
@@ -48,5 +48,6 @@ def test(argv):
 	
 
 if __name__ == "__main__":
+	""" usage: dirtools.py [ldapuri] [binddn] [password] """
 	test(sys.argv)
 
