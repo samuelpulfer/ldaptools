@@ -3,22 +3,41 @@
 
 # setup paths
 import os, sys
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'etc'))
-
-# import modules
 import ldap
 import ldap.modlist as modlist
 import logging
 
 ## global variables ############################################################
-_conn = None
 
-# new and simpler api
-def connect(config):
-	""" returns a valid ldap connection """
 
-def disconnect():
-	""" close the connection """
+def copy_member(ldapconn, src_group, target_group):
+	""" this methods copies members from one group to another. 
+	    
+	    member in the target group which are not in the src group will be removed.
+	    
+	    it expects the following parameters
+	    - ldapconn: an ldap connection object
+	    - src_group: the DN pointing to the source group
+	    - target_group: DN of the target
+	    
+	    Both objects (src, tgt) must be able to have one to many "member" attributes.
+	"""
+	pass
+
+def sync_member(ldapconn, src_group, target_group):
+	""" this methods syncs members from one group to another. 
+	    
+	    member in the target group which are not in the src group will remain in the target grp.
+	    
+	    it expects the following parameters
+	    - ldapconn: an ldap connection object
+	    - src_group: the DN pointing to the source group
+	    - target_group: DN of the target
+	    
+	    Both objects (src, tgt) must be able to have one to many "member" attributes.
+	"""
+	pass
+
 
 '''
 class ldaptools(object):
