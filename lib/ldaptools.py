@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-
-
 # setup paths
 import os, sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'etc'))
@@ -11,18 +9,18 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'etc'))
 import ldap
 import ldap.modlist as modlist
 import logging
-import config
 
 ## global variables ############################################################
+_conn = None
 
-# AD User mit entsprechender Berechtigung
-userdn = config.userdn
-userpw = config.userpw
-# Domain infos
-baseDN = config.baseDN
-host = config.host
-ldap_url = config.ldap_url
-	
+# new and simpler api
+def connect(config):
+	""" returns a valid ldap connection """
+
+def disconnect():
+	""" close the connection """
+
+'''
 class ldaptools(object):
 	def __init__(self):
 		# Konstruktor
@@ -166,25 +164,4 @@ class ldaptools(object):
 			return True
 		else:
 			return False
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+'''
