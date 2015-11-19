@@ -16,12 +16,12 @@ import config
 ## global variables ############################################################
 
 # AD User mit entsprechender Berechtigung
-userdn = "CN=Medizintechnik Testaccount,OU=Admin,OU=Users,OU=MTInf,OU=USB,DC=ms,DC=uhbs,DC=ch"
-userpw = "********"
+userdn = config.userdn
+userpw = config.userpw
 # Domain infos
-baseDN = "ou=USB,dc=ms,dc=uhbs,dc=ch"
-host = "ms.uhbs.ch"
-ldap_url = "ldap://ms.uhbs.ch:389"	
+baseDN = config.baseDN
+host = config.host
+ldap_url = config.ldap_url
 	
 class ldaptools(object):
 	def __init__(self):
