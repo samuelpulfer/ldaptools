@@ -19,7 +19,9 @@ the config file would look like this:
     # groups to sync
     sync = [
     	{
-    		"from": "CN=SrcGroup,DC=Users,DC=example,DC=com", 
+    		# valid ldap query. members of all returned groups are copied to target
+    		"from": "(&(cn=groupName)(objectClass=group))",
+    		# destination dn, this object's members will be propulated
     		"to": "CN=TgtGroup,DC=Users,DC=example,DC=com"
     	}, /* etc */
     ]
