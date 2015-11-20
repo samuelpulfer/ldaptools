@@ -9,8 +9,16 @@ import logging
 
 ## global variables ############################################################
 
+def member_delete(ldapconn, target_group):
+	""" delete all "member" attributes of a node
+	
+	    it expects the following parameters
+	    - ldapconn: an ldap connection object
+	    - target_group: DN of the target
+	"""
+	pass
 
-def copy_member(ldapconn, src_group, target_group):
+def member_copy(ldapconn, src_group, target_group):
 	""" this methods copies members from one group to another. 
 	    
 	    member in the target group which are not in the src group will be removed.
@@ -24,7 +32,7 @@ def copy_member(ldapconn, src_group, target_group):
 	"""
 	pass
 
-def sync_member(ldapconn, src_group, target_group):
+def member_sync(ldapconn, src_group, target_group):
 	""" this methods syncs members from one group to another. 
 	    
 	    member in the target group which are not in the src group will remain in the target grp.

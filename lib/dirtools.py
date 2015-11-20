@@ -26,17 +26,31 @@ def connect(uri, binddn, userpw):
 	#print _conn
 	return _conn
 	
-def search(conn, filter, subtree=False):
+def search(filter, basedn, subtree=False):
 	scope = ldap.SCOPE_ONELEVEL
 	if (subtree):
 		scope = ldap.SCOPE_SUBTREE
-	return conn.search_s(config["basedn"], scope, filter)
+	return _conn.search_s(basedn, scope, filter)
 
 def listdn(result):
 	for r in result:
 		if len(r[1]) == 1 and len(r[1][0]) > 4 and r[1][0][0:4] == "ldap": # skip referrals
 			continue
 		print r[0]
+
+def len(result):
+	""" Get length of Result (filtering invalid entries)
+	
+	LDAP results contain entries with empty DNs, at least this is what 
+	Microsoft's AD returns. These empty entries are ldap urls pointing to 
+	other directory trees. This is obsolete as of LDAPv3, so we ignore them.
+	"""
+	l = 0;
+	for (dn, item) in result:
+		if dn == None :
+			continue
+		l += 1
+	return l
 
 def test(argv):
 	#init() # FIXME, this method moved to the main function of the program

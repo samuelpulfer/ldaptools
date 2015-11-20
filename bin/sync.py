@@ -42,18 +42,42 @@ def read_config():
 			config["userpw"] = f.read()
 			config["userpw"] = config["userpw"].strip() # remove trailing whitespace
 	except:
+		e = sys.exc_info()[0]
 		print("Error while loading password file %s") % passfile
+		sys.stderr.write(str(e))
 		sys.exit(3)
 		
 	return config
 
 if __name__ == "__main__":
+	
+	# read configuration and password files from etc. the config file fo this host
+	# is looked up under ../etc/`hostname`.py, the pw file under 
+	# ../etc/`hostname`.pass
 	config = read_config()
 	
-	#print config
-	
+	# connect to ldap server
 	l = dirtools.connect(config["ldap_url"], config["userdn"], config["userpw"])
-	print l
+	
+	# loop over all items which have to be synced
+	for entry in config["sync"]:
+		# debug
+		#print entry["from"]
+		#print entry["to"]
+		
+		# do a subtree search with our filter from the configuration
+		res = dirtools.search(entry["from"], config["baseDN"], True)
+		
+		# LDAP results contain entries with empty DNs, at least this is what 
+		# Microsoft's AD returns. These empty entries are ldap urls pointing to 
+		# other directory trees. This is obsolete as of LDAPv3, so we ignore them.
+		num_records = dirtools.len(res)
+		print num_records
+		
+		# debug
+		#dirtools.listdn(res)
+	
+	
 	dirtools.disconnect()
 	
 	#a = ldaptools.ldaptools()
