@@ -127,7 +127,7 @@ if __name__ == "__main__":
 		
 		# copy, preserve all members in target
 		log.info("Wiriting to %s" % entry["to"])
-		ret = ldaptools.member_copy(l, cnlist, entry["to"])
+		ret = ldaptools.member_sync(l, cnlist, entry["to"])
 		log.info(ret)
 		#print ldaptools.get_one(l, entry["to"])
 		

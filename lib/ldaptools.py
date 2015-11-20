@@ -42,6 +42,7 @@ def member_copy(ldapconn, cnlist, target_group):
 		tgt_list = res["member"]
 	
 	ret = {
+		"method": "copy",
 		"old_length": len(tgt_list),
 		"new_length": 0,
 		"added": 0
@@ -99,13 +100,28 @@ def member_sync(ldapconn, cnlist, target_group):
 	else:
 		tgt_list = res["member"]
 	
+	ret = {
+		"method": "sync",
+		"old_length": len(tgt_list),
+		"new_length": len(cnlist),
+		"added": len(cnlist)
+	}
+	
 	# create mod list
 	mlist = modlist.modifyModlist({'member':tgt_list}, {'member':cnlist})
 	
 	# commit
+	ret["new_length"] = ret["old_length"]
 	if len(mlist) > 0:
+		#print mlist
+		if mlist[0][0] == 1:
+			ret["new_length"] = len(mlist[1][2])
+		else:
+			ret["new_length"] = len(mlist[0][2])
+		
 		ldapconn.modify_s(target_group, mlist)
 	
+	return ret
 
 def get_one(ldapconn, dn):
 	parts = dn.split(",")
