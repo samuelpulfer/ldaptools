@@ -6,6 +6,8 @@ import os, sys
 import ldap
 import ldap.modlist as modlist
 import logging
+import ldap.filter
+import re
 
 ## global variables ############################################################
 
@@ -21,7 +23,7 @@ def member_delete(ldapconn, target_group):
 def member_copy(ldapconn, cnlist, target_group):
 	""" this methods copies members from one group to another. 
 	    
-	    member in the target group which are not in the src group will be removed.
+	    member in the target group which are not in the src group will remain in the target grp.
 	    
 	    it expects the following parameters
 	    - ldapconn: an ldap connection object
@@ -73,15 +75,16 @@ def member_copy(ldapconn, cnlist, target_group):
 	
 	return ret
 	
-def member_sync(ldapconn, cnlist, target_group):
+def member_sync(ldapconn, cnlist, target_group, preserveGroupMemebers=True):
 	""" this methods syncs members from one group to another. 
 	    
-	    member in the target group which are not in the src group will remain in the target grp.
+	    member in the target group which are not in the src group will be removed. 
 	    
 	    it expects the following parameters
 	    - ldapconn: an ldap connection object
 	    - cnlist: list of DNs of new members
 	    - target_group: DN of the target
+	    - preserveGroupMemebers: keep all members that have an objectClass == 'group'
 	    
 	    Both objects (src, tgt) must be able to have one to many "member" attributes.
 	"""
@@ -101,6 +104,23 @@ def member_sync(ldapconn, cnlist, target_group):
 		"old_length": len(tgt_list),
 		"new_length": len(cnlist)
 	}
+
+	# find members that are group
+	grp_member = []
+	if preserveGroupMemebers:
+		for e in tgt_list:
+			o = get_one(ldapconn, e)
+			is_group = False
+			try:
+				is_group = ("group" in o[0][1]["objectClass"])
+			except:
+				pass
+			#print is_group, o[0][0]
+			
+			if is_group:
+				grp_member.append(o[0][0])
+	
+	cnlist = cnlist + grp_member
 	
 	# create mod list
 	mlist = modlist.modifyModlist({'member':tgt_list}, {'member':cnlist})
@@ -121,9 +141,15 @@ def member_sync(ldapconn, cnlist, target_group):
 def get_one(ldapconn, dn):
 	parts = dn.split(",")
 	cn = parts[0]
-	search = ",".join(parts[1:])
-
-	return ldapconn.search_s(search, ldap.SCOPE_ONELEVEL, cn)
+	#search = ",".join(parts[1:])
+	
+	# this hack is required because our super directory 
+	# architects put () and , into the DN
+	f = re.sub(r'([^\\]),.*', "\\1", dn)
+	search = dn.replace(f+",", "").strip()
+	f = f.replace("\\,", ",")
+	f = ldap.filter.escape_filter_chars(f, 0);
+	return ldapconn.search_s(search, ldap.SCOPE_ONELEVEL, f)
 
 '''
 class ldaptools(object):
