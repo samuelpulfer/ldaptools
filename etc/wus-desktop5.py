@@ -9,9 +9,11 @@ modification_logfile="var/modification.log"
 sync = [
 	{
 		"from": "(&(cn=MQ_ANA_*A)(objectClass=group))", 
-		"to": "CN=MQ_B_M_Anaesthesiologie-VD-User-Aerzte-LA,OU=Business,OU=Groups,OU=MQInf,OU=USB,DC=ms,DC=uhbs,DC=ch"
+		"to": "CN=MQ_B_M_Anaesthesiologie-VD-User-Aerzte-LA,OU=Business,OU=Groups,OU=MQInf,OU=USB,DC=ms,DC=uhbs,DC=ch",
+		"method": "sync", # sync|copy|delete
 	}
 ]
+
 """
 	{
 		"from": "CN=MQ_ANA_LA,OU=Exchange_Adressbuecher,OU=PITServer,DC=ms,DC=uhbs,DC=ch", 

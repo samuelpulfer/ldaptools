@@ -1,6 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+""" ldap basic utilities
+
+- connect
+- disconnect
+- search: search directory
+- len: length of search result
+- listdn: list DN's of a result (for debugging)
+"""
+
 import sys, os
 import socket
 import ldap

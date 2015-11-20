@@ -1,6 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
+"""
+Synchronize directory groups
+
+This script copies all members of a list of groups to another group. Members
+may be replaced or added.
+
+If a member of a target group is objectClass=group, it will not be purged.
+
+(c) 2015, Simon Wunderlin
+"""
+
 # setup paths
 import os, sys, socket
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'etc'))
@@ -15,35 +26,52 @@ from logging.handlers import TimedRotatingFileHandler
 def read_config():
 	""" this method looks for a config file in etc/`hostname`.py. The file 
 	    is treated like a regular python file (__import__) and if successfuly 
-	    imported the file's attributes will be returned as a dict."""
+	    imported the file's attributes will be returned as a dict.
+	"""
+	
+	# configuration 
 	config = {}
+	
+	# resolve path to current file
 	basepath = os.path.dirname(os.path.realpath(__file__)) + "/"
+	
+	# get hostname
 	hostname = socket.gethostname()
+	
+	# path to config file directory
 	configpath = os.path.realpath(basepath+'../etc')
+	
+	# file containing configuration for this host
 	configfile = os.path.realpath(configpath+'/%s.py' % hostname)
+	
+	# file containing pasword for this host (whitespace stripped)
 	passfile = os.path.realpath(configpath+'/%s.pass' % hostname)
 	
+	# add config directory to include paths
 	sys.path.append(configpath)
 	try:
+		# include config file
 		cfgfile = __import__(hostname)
 	except:
+		# most probably the file doe not exist or is not readable
 		e = sys.exc_info()[0]
 		msg = "Failed to read config file '%s', make sure it exists." % (configfile)
 		sys.stderr.write(msg+"\n")
 		sys.stderr.write(str(e))
 		sys.exit(2)
 	
+	# copy all attributes for configfile to config
 	attrs = [a for a in dir(cfgfile) if not a.startswith('__')]
 	for a in attrs:
-		v = getattr(cfgfile, a)
-		#print "%s=%s" % (a, v)
-		config[a] = v
+		config[a] = getattr(cfgfile, a)
 	
+	# read password from file
 	try:
 		with open(passfile) as f: 
 			config["userpw"] = f.read()
 			config["userpw"] = config["userpw"].strip() # remove trailing whitespace
 	except:
+		# most probably the file doe not exist or is not readable
 		e = sys.exc_info()[0]
 		print("Error while loading password file %s") % passfile
 		sys.stderr.write(str(e))
@@ -55,12 +83,17 @@ def get_logger(logfile, service_name, level):
 	# Logger initialisieren
 	l = logging.getLogger(service_name)
 	l.setLevel(level)
-	#fh = logging.FileHandler(logfile)
+	
+	# log rotation every day
 	fh = TimedRotatingFileHandler(logfile, 'midnight') # logrotation, 1 file per day
 	fh.setLevel(level)
+	
+	# standard unix log file format
 	formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 	fh.setFormatter(formatter)
 	l.addHandler(fh)
+	
+	# log startup
 	l.info('==> Starting ' + service_name)
 	
 	return l
@@ -126,21 +159,21 @@ if __name__ == "__main__":
 		# decide which method to use: copy, sync or delete
 		log.info("Wiriting to %s" % entry["to"])
 		
-		# copy all members from srcc to target, deleting everything not in src
-		#ret = ldaptools.member_sync(l, cnlist, entry["to"])
+		if config["method"] == "sync":
+			# copy all members from src to target, deleting everything not in src
+			ret = ldaptools.member_sync(l, cnlist, entry["to"])
+		elif config["method"] == "copy":
+			# copy all from src to tgt, preserving existing members in tgt
+			ret = ldaptools.member_copy(l, cnlist, entry["to"])
+		elif config["method"] == "delete":
+			# delete all members
+			raise ValueError('Method delete not implemented')
+		else:
+			raise ValueError('Unknown method: %s' % config["method"])
 		
-		# copy all fro msrc to tgt, preserving existing members in tgt
-		ret = ldaptools.member_sync(l, cnlist, entry["to"])
 		log.info("result: " + str(ret))
-		#print ldaptools.get_one(l, entry["to"])
 		
-		# sync, overwrite everything
-		#ldaptools.member_sync(l, cnlist, entry["to"])
-		
+	# all done, close connection to ldap server
 	log.debug("Disconnecting from %s" % config["ldap_url"])
 	dirtools.disconnect()
-	
-	#a = ldaptools.ldaptools()
-	#a.sync(config.syncfromcn, config.synctocn)
-	#a.commit()
-	#del a
+
