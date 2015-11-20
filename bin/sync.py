@@ -61,7 +61,7 @@ def get_logger(logfile, service_name, level):
 	formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 	fh.setFormatter(formatter)
 	l.addHandler(fh)
-	l.info('Starting ' + service_name)
+	l.info('==> Starting ' + service_name)
 	
 	return l
 
@@ -111,7 +111,7 @@ if __name__ == "__main__":
 		num_records = dirtools.len(res)
 		log.debug("Number of entries found by search: %d" % num_records)
 		
-		# find all members
+		# find all members of all DNs
 		cnlist = []
 		for r in res:
 			if r[0] == None: # skip ldap referers
@@ -121,7 +121,18 @@ if __name__ == "__main__":
 			except:
 				log.warn("%s does not have a member attribute" % r[0])
 		
-		print cnlist
+		log.info("Found %d members in src DNs" % len(cnlist))
+		
+		# decide which method to use: copy, sync or delete
+		
+		# copy, preserve all members in target
+		log.info("Wiriting to %s" % entry["to"])
+		ret = ldaptools.member_copy(l, cnlist, entry["to"])
+		log.info(ret)
+		#print ldaptools.get_one(l, entry["to"])
+		
+		# sync, overwrite everything
+		#ldaptools.member_sync(l, cnlist, entry["to"])
 		
 	log.debug("Disconnecting from %s" % config["ldap_url"])
 	dirtools.disconnect()

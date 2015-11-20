@@ -18,34 +18,101 @@ def member_delete(ldapconn, target_group):
 	"""
 	pass
 
-def member_copy(ldapconn, src_group, target_group):
+def member_copy(ldapconn, cnlist, target_group):
 	""" this methods copies members from one group to another. 
 	    
 	    member in the target group which are not in the src group will be removed.
 	    
 	    it expects the following parameters
 	    - ldapconn: an ldap connection object
-	    - src_group: the DN pointing to the source group
+	    - cnlist: list of DNs of new members
 	    - target_group: DN of the target
 	    
 	    Both objects (src, tgt) must be able to have one to many "member" attributes.
 	"""
-	pass
-
-def member_sync(ldapconn, src_group, target_group):
+	
+	# get target group
+	r = get_one(ldapconn, target_group)
+	
+	# extract existing members
+	res = r[0][1]
+	if "member" not in res:
+		tgt_list = []
+	else:
+		tgt_list = res["member"]
+	
+	ret = {
+		"old_length": len(tgt_list),
+		"new_length": 0,
+		"added": 0
+	}
+	
+	#print tgt_list
+	
+	# append existing members to new members
+	new_member = tgt_list[:] # copy rather than reference
+	for e in cnlist:
+		if e not in new_member:
+			new_member.append(e)
+			ret["added"] += 1
+	
+	# create mod list
+	mlist = modlist.modifyModlist({'member':tgt_list}, {'member':new_member})
+	#print tgt_list
+	#print mlist
+	#print target_group
+	#print "old length: %d, new length: %d" % (len(tgt_list), len(new_member))
+	# commit
+	ret["new_length"] = ret["old_length"]
+	if len(mlist) > 0:
+		#print mlist
+		if mlist[0][0] == 1:
+			ret["new_length"] = len(mlist[1][2])
+		else:
+			ret["new_length"] = len(mlist[0][2])
+			
+		ldapconn.modify_s(target_group, mlist)
+		#print "Writing %d entries" %  len(mlist[0][2])
+	
+	return ret
+	
+def member_sync(ldapconn, cnlist, target_group):
 	""" this methods syncs members from one group to another. 
 	    
 	    member in the target group which are not in the src group will remain in the target grp.
 	    
 	    it expects the following parameters
 	    - ldapconn: an ldap connection object
-	    - src_group: the DN pointing to the source group
+	    - cnlist: list of DNs of new members
 	    - target_group: DN of the target
 	    
 	    Both objects (src, tgt) must be able to have one to many "member" attributes.
 	"""
-	pass
+	
+	# get target group
+	r = get_one(ldapconn, target_group)
+	
+	# extract existing members
+	res = r[0][1]
+	if "member" not in res:
+		tgt_list = []
+	else:
+		tgt_list = res["member"]
+	
+	# create mod list
+	mlist = modlist.modifyModlist({'member':tgt_list}, {'member':cnlist})
+	
+	# commit
+	if len(mlist) > 0:
+		ldapconn.modify_s(target_group, mlist)
+	
 
+def get_one(ldapconn, dn):
+	parts = dn.split(",")
+	cn = parts[0]
+	search = ",".join(parts[1:])
+
+	return ldapconn.search_s(search, ldap.SCOPE_ONELEVEL, cn)
 
 '''
 class ldaptools(object):

@@ -28,7 +28,7 @@ sync = [
 """
 
 userdn = "CN=A_WunderlinS,OU=Admin,OU=Users,OU=MQInf,OU=USB,DC=ms,DC=uhbs,DC=ch"
-userpw = None
+userpw = None # stored in etc/`hostname`.pass
 
 # Domain infos
 baseDN = "dc=ms,dc=uhbs,dc=ch"
