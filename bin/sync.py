@@ -124,11 +124,14 @@ if __name__ == "__main__":
 		log.info("Found %d members in src DNs" % len(cnlist))
 		
 		# decide which method to use: copy, sync or delete
-		
-		# copy, preserve all members in target
 		log.info("Wiriting to %s" % entry["to"])
+		
+		# copy all members from srcc to target, deleting everything not in src
+		#ret = ldaptools.member_sync(l, cnlist, entry["to"])
+		
+		# copy all fro msrc to tgt, preserving existing members in tgt
 		ret = ldaptools.member_sync(l, cnlist, entry["to"])
-		log.info(ret)
+		log.info("result: " + str(ret))
 		#print ldaptools.get_one(l, entry["to"])
 		
 		# sync, overwrite everything
