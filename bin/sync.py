@@ -9,6 +9,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'lib'))
 # import modules
 import ldaptools
 import dirtools
+import logging
+from logging.handlers import TimedRotatingFileHandler
 
 def read_config():
 	""" this method looks for a config file in etc/`hostname`.py. The file 
@@ -49,21 +51,56 @@ def read_config():
 		
 	return config
 
+def get_logger(logfile, service_name, level):
+	# Logger initialisieren
+	l = logging.getLogger(service_name)
+	l.setLevel(level)
+	#fh = logging.FileHandler(logfile)
+	fh = TimedRotatingFileHandler(logfile, 'midnight') # logrotation, 1 file per day
+	fh.setLevel(level)
+	formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+	fh.setFormatter(formatter)
+	l.addHandler(fh)
+	l.info('Starting ' + service_name)
+	
+	return l
+
 if __name__ == "__main__":
+	"""
+	LOG LEVELS:
+		CRITICAL	50
+		ERROR	40
+		WARNING	30
+		INFO	20
+		DEBUG	10
+		NOTSET	0
+	"""
+	log_level = logging.DEBUG
 	
 	# read configuration and password files from etc. the config file fo this host
 	# is looked up under ../etc/`hostname`.py, the pw file under 
 	# ../etc/`hostname`.pass
 	config = read_config()
 	
+	# set up logging 
+	log_file = config["modification_logfile"]
+	if config["modification_logfile"][0] != "/":
+		log_file = os.path.dirname(__file__) + "/../" + config["modification_logfile"]
+	log = get_logger(log_file, "ldap_sync", log_level)
+	
+	log.info("Connecting to %s" % (config["ldap_url"]))
+	log.info("BindDN %s" % (config["userdn"]))
+	
 	# connect to ldap server
-	l = dirtools.connect(config["ldap_url"], config["userdn"], config["userpw"])
+	try:
+		l = dirtools.connect(config["ldap_url"], config["userdn"], config["userpw"])
+	except:
+		log.critical("Failed to connect")
+		sys.exit(2)
 	
 	# loop over all items which have to be synced
 	for entry in config["sync"]:
-		# debug
-		#print entry["from"]
-		#print entry["to"]
+		log.info("Syncing %s" % entry["from"])
 		
 		# do a subtree search with our filter from the configuration
 		res = dirtools.search(entry["from"], config["baseDN"], True)
@@ -72,12 +109,21 @@ if __name__ == "__main__":
 		# Microsoft's AD returns. These empty entries are ldap urls pointing to 
 		# other directory trees. This is obsolete as of LDAPv3, so we ignore them.
 		num_records = dirtools.len(res)
-		print num_records
+		log.debug("Number of entries found by search: %d" % num_records)
 		
-		# debug
-		#dirtools.listdn(res)
-	
-	
+		# find all members
+		cnlist = []
+		for r in res:
+			if r[0] == None: # skip ldap referers
+				continue
+			try:
+				cnlist = cnlist + r[1]["member"]
+			except:
+				log.warn("%s does not have a member attribute" % r[0])
+		
+		print cnlist
+		
+	log.debug("Disconnecting from %s" % config["ldap_url"])
 	dirtools.disconnect()
 	
 	#a = ldaptools.ldaptools()

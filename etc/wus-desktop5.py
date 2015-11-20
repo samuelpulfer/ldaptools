@@ -8,7 +8,7 @@ modification_logfile="var/modification.log"
 # groups to sync
 sync = [
 	{
-		"from": "(&(cn=MQ_ANA_LA)(objectClass=group))", 
+		"from": "(&(cn=MQ_ANA_*A)(objectClass=group))", 
 		"to": "CN=MQ_B_M_Anaesthesiologie-VD-User-Aerzte-LA,OU=Business,OU=Groups,OU=MQInf,OU=USB,DC=ms,DC=uhbs,DC=ch"
 	}
 ]
