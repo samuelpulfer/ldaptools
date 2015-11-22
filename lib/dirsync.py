@@ -141,6 +141,11 @@ def member_sync(ldapconn, cnlist, target_group, preserveGroupMemebers=True):
 	return ret
 
 def get_one(ldapconn, dn):
+	""" fetch a single object from a directory by DN 
+	
+	This method hacks around silly CN's that use characers like "(),\" in the name
+	
+	"""
 	parts = dn.split(",")
 	cn = parts[0]
 	#search = ",".join(parts[1:])
