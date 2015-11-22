@@ -22,7 +22,8 @@ the config file would look like this:
     		# valid ldap query. members of all returned groups are copied to target
     		"from": "(&(cn=groupName)(objectClass=group))",
     		# destination dn, this object's members will be propulated
-    		"to": "CN=TgtGroup,DC=Users,DC=example,DC=com"
+    		"to": "CN=TgtGroup,DC=Users,DC=example,DC=com",
+    		"method": "sync", # sync|copy|delete
     	}, /* etc */
     ]
     
