@@ -18,8 +18,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'etc'))
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'lib'))
 
 # import modules
-import ldaptools
 import dirtools
+import dirsync
 import logging
 from logging.handlers import TimedRotatingFileHandler
 
