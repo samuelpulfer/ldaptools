@@ -159,17 +159,20 @@ if __name__ == "__main__":
 		# decide which method to use: copy, sync or delete
 		log.info("Wiriting to %s" % entry["to"])
 		
-		if config["method"] == "sync":
+		#from pprint import pprint
+		#pprint(entry)
+		
+		if entry["method"] == "sync":
 			# copy all members from src to target, deleting everything not in src
 			ret = ldaptools.member_sync(l, cnlist, entry["to"])
-		elif config["method"] == "copy":
+		elif entry["method"] == "copy":
 			# copy all from src to tgt, preserving existing members in tgt
 			ret = ldaptools.member_copy(l, cnlist, entry["to"])
-		elif config["method"] == "delete":
+		elif entry["method"] == "delete":
 			# delete all members
 			raise ValueError('Method delete not implemented')
 		else:
-			raise ValueError('Unknown method: %s' % config["method"])
+			raise ValueError('Unknown method: %s' % entry["method"])
 		
 		log.info("result: " + str(ret))
 		
