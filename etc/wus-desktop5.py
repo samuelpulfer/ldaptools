@@ -77,7 +77,7 @@ sync = [
 	},
 """
 
-userdn = "CN=A_WunderlinS,OU=Admin,OU=Users,OU=MQInf,OU=USB,DC=ms,DC=uhbs,DC=ch"
+userdn = "CN=Dir Sync,OU=Admin,OU=Users,OU=MQInf,OU=USB,DC=ms,DC=uhbs,DC=ch"
 userpw = None # stored in etc/`hostname`.pass
 
 # Domain infos
