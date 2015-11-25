@@ -8,24 +8,34 @@ modification_logfile="var/modification.log"
 # groups to sync
 sync = [
 	{
-		"from": "(&(cn=MQ_ANA_*A)(objectClass=group))", 
-		"to": "CN=MQ_B_M_Anaesthesiologie-VD-User-Aerzte-LA,OU=Business,OU=Groups,OU=MQInf,OU=USB,DC=ms,DC=uhbs,DC=ch",
+		"from": "(&(cn=MQ_ANA_LA)(objectClass=group))", 
+		"to": "CN=MQ_B_U_Anaesthesiologie-VD-User-Aerzte-LA,OU=Business,OU=Groups,OU=MQInf,OU=USB,DC=ms,DC=uhbs,DC=ch",
 		"method": "sync", # sync|copy|delete
-	}
+	},
+	{
+		"from": "(&(cn=MQ_ANA_OA)(objectClass=group))", 
+		"to": "CN=MQ_B_U_Anaesthesiologie-VD-User-Aerzte-OA,OU=Business,OU=Groups,OU=MQInf,OU=USB,DC=ms,DC=uhbs,DC=ch",
+		"method": "sync", # sync|copy|delete
+	},
+	{
+		"from": "(&(cn=MQ_ANA_AA)(objectClass=group))", 
+		"to": "CN=MQ_B_U_Anaesthesiologie-VD-User-Aerzte-AA,OU=Business,OU=Groups,OU=MQInf,OU=USB,DC=ms,DC=uhbs,DC=ch",
+		"method": "sync", # sync|copy|delete
+	},
 ]
 
 """
 	{
 		"from": "CN=MQ_ANA_LA,OU=Exchange_Adressbuecher,OU=PITServer,DC=ms,DC=uhbs,DC=ch", 
-		"to": "CN=MQ_B_M_Anaesthesiologie-VD-User-Aerzte-LA,OU=Business,OU=Groups,OU=MQInf,OU=USB,DC=ms,DC=uhbs,DC=ch"
+		"to": "CN=MQ_B_U_Anaesthesiologie-VD-User-Aerzte-LA,OU=Business,OU=Groups,OU=MQInf,OU=USB,DC=ms,DC=uhbs,DC=ch"
 	},
 	{
 		"from": "CN=MQ_ANA_OA,OU=Exchange_Adressbuecher,OU=PITServer,DC=ms,DC=uhbs,DC=ch", 
-		"to": "CN=MQ_B_M_Anaesthesiologie-VD-User-Aerzte-OA,OU=Business,OU=Groups,OU=MQInf,OU=USB,DC=ms,DC=uhbs,DC=ch"
+		"to": "CN=MQ_B_U_Anaesthesiologie-VD-User-Aerzte-OA,OU=Business,OU=Groups,OU=MQInf,OU=USB,DC=ms,DC=uhbs,DC=ch"
 	},
 	{
 		"from": "CN=MQ_ANA_AA,OU=Exchange_Adressbuecher,OU=PITServer,DC=ms,DC=uhbs,DC=ch", 
-		"to": "CN=MQ_B_M_Anaesthesiologie-VD-User-Aerzte-AA,OU=Business,OU=Groups,OU=MQInf,OU=USB,DC=ms,DC=uhbs,DC=ch"
+		"to": "CN=MQ_B_U_Anaesthesiologie-VD-User-Aerzte-AA,OU=Business,OU=Groups,OU=MQInf,OU=USB,DC=ms,DC=uhbs,DC=ch"
 	},
 """
 

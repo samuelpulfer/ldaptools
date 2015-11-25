@@ -164,10 +164,10 @@ if __name__ == "__main__":
 		
 		if entry["method"] == "sync":
 			# copy all members from src to target, deleting everything not in src
-			ret = ldaptools.member_sync(l, cnlist, entry["to"])
+			ret = dirsync.member_sync(l, cnlist, entry["to"])
 		elif entry["method"] == "copy":
 			# copy all from src to tgt, preserving existing members in tgt
-			ret = ldaptools.member_copy(l, cnlist, entry["to"])
+			ret = dirsync.member_copy(l, cnlist, entry["to"])
 		elif entry["method"] == "delete":
 			# delete all members
 			raise ValueError('Method delete not implemented')
