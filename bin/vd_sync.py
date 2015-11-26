@@ -1,5 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#
+
+"""
+FIXME: this executable should make use of the dirtools library
+"""
+
 
 import os
 import ldap, ldif, sys, re

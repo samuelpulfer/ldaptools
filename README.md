@@ -42,9 +42,9 @@ the config file would look like this:
     baseDN = "DC=example,DC=com"
     ldap_url = "ldap://dir.example.com:389"	
 
-## member synchronization
+## Member synchronization
 This is straight forward. The executable `bin/sync.py` looks for all members 
-found in `sync[...][N]["filter"]` and copies all DNs to 
+found in `sync[...][N]["from"]` and copies all DNs to 
 `sync[...][N]["to"]` where the last config value is a DN to an ldap group.
 
 ## VD Sync
