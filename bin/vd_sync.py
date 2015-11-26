@@ -4,7 +4,8 @@
 import os
 import ldap, ldif, sys, re
 import pprint
-from datetime import datetime
+#from datetime import datetime
+import datetime
 import ldap.filter
 import csv
 import socket
@@ -33,6 +34,8 @@ def get_ma(filter, dst):
 	res = l.search_s(base, ldap.SCOPE_SUBTREE, filter)
 	for r in res:
 		cnlist = cnlist + r[1]["member"]
+	
+	#pprint.pprint(cnlist)
 	
 	result = [] # list of (user, cn, sAMAccountName)
 	aduser = [] # list of sAMAccountName
@@ -66,7 +69,8 @@ def get_ma(filter, dst):
 		for row in hostreader:
 			adname = ""
 			try:
-				adname = row[3].split("\\")[1].lower()
+				adname = row[2].split("\\")[1].lower()
+				#print adname
 			except:
 				pass
 			
@@ -117,7 +121,7 @@ def main():
 	
 	count = 0
 	for dst in config["sync"]:
-		print "=====> %s" % dst["filter"]
+		print "%s" % dst["filter"]
 		count += get_ma(dst["filter"], dst["to"])
 	
 	print "Total count of VDs: %s" % count
@@ -125,6 +129,7 @@ def main():
 
 if __name__ == "__main__":
 	pp = pprint.PrettyPrinter(indent=4)
+	print "=====> %s" % str(datetime.datetime.now())
 	
 	# argument 1 must contain the path to the import file
 	try:
@@ -156,10 +161,10 @@ if __name__ == "__main__":
 			msg = "Make sure the config file '%s' exists." % ('../etc/'+hostname+".py")
 			sys.stderr.write(msg+"\n")
 			sys.exit(2)
-		config["uri"] = cfgfile.uri
-		config["binddn"] = cfgfile.binddn
-		config["base"] = cfgfile.basedn
-		config["sync"] = cfgfile.sync
+		config["uri"] = cfgfile.ldap_url
+		config["binddn"] = cfgfile.userdn
+		config["base"] = cfgfile.baseDN
+		config["sync"] = cfgfile.sync_vd
 	
 	read_cfg()
 	
