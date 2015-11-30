@@ -23,7 +23,14 @@ sync = [
 		# destination dn, this object's members will be propulated
 		"to": "CN=TgtGroup,DC=Users,DC=example,DC=com",
 		"method": "sync", # sync|copy|delete
-	}, /* etc */
+	}, # etc 
+]
+
+sync_vd = [
+	{
+		"filter": "(& (cn=my_group) (objectClass=group) )", 
+		"to": "CN=DC=example,DC=com"}
+	},
 ]
 
 userdn = "CN=admin,DC=example,DC=com"

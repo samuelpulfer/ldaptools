@@ -30,8 +30,8 @@ the config file would look like this:
     # find all VD names for users in group "filter", write vd names into group "to"
     sync_vd = [
     	{
-    		"filter": "(& (cn=MQ_ANA_AA) (objectClass=group) )", 
-    		"to": "CN=MQ_B_M_Anaesthesiologie-VD-Aerzte-AA,OU=Business,OU=Groups,OU=MQInf,OU=USB,DC=ms,DC=uhbs,DC=ch"
+    	  "filter": "(& (cn=my_group) (objectClass=group) )", 
+    	  "to": "CN=DC=example,DC=com"}
     	}, # etc ...
     ]
     
