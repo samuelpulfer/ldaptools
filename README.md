@@ -40,7 +40,7 @@ the config file would look like this:
     
     # Domain infos
     baseDN = "DC=example,DC=com"
-    ldap_url = "ldap://dir.example.com:389"	
+    ldap_url = "ldap://example.com:389"	
 
 ## Member synchronization
 This is straight forward. The executable `bin/sync.py` looks for all members 
