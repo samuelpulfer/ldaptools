@@ -29,7 +29,7 @@ sync = [
 sync_vd = [
 	{
 		"filter": "(& (cn=my_group) (objectClass=group) )", 
-		"to": "CN=DC=example,DC=com"}
+		"to": "CN=DC=example,DC=com"
 	},
 ]
 

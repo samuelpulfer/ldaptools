@@ -31,7 +31,7 @@ the config file would look like this:
     sync_vd = [
     	{
     	  "filter": "(& (cn=my_group) (objectClass=group) )", 
-    	  "to": "CN=DC=example,DC=com"}
+    	  "to": "CN=DC=example,DC=com"
     	}, # etc ...
     ]
     
