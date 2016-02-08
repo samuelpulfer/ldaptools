@@ -83,7 +83,10 @@ sync = [
 		"to": "CN=MQ_B_U_Anaesthesiologie-Aerzte-AA,OU=Business,OU=Groups,OU=MQInf,OU=USB,DC=ms,DC=uhbs,DC=ch"
 	},
 """
+# LOWERCASE a list of ad usernames to ignore in sync
+sync_vd_ignore_user = ["keilc"]
 
+# a list of groups to sync
 sync_vd = [
 	{"filter": "(& (cn=MQ_ANA_AA) (objectClass=group) )", "to": "CN=MQ_B_M_Anaesthesiologie-VD-Aerzte-AA,OU=Business,OU=Groups,OU=MQInf,OU=USB,DC=ms,DC=uhbs,DC=ch"},
 	{"filter": "(& (cn=MQ_ANA_OA) (objectClass=group) )", "to": "CN=MQ_B_M_Anaesthesiologie-VD-Aerzte-OA,OU=Business,OU=Groups,OU=MQInf,OU=USB,DC=ms,DC=uhbs,DC=ch"},
