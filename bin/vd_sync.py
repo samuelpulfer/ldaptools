@@ -60,6 +60,8 @@ def get_ma(filter, dst):
 			samaccountname = res[0][1]["sAMAccountName"][0]
 		except:
 			pass
+		if samaccountname == None:
+			continue
 		
 		result.append( (u, cn, samaccountname.lower()) )
 		aduser.append(samaccountname.lower())
@@ -83,6 +85,9 @@ def get_ma(filter, dst):
 			if adname not in aduser:
 				continue
 			
+			if adname in cfg.sync_vd_ignore_user:
+				continue
+
 			# resolve the full dn of the vd
 			vddn = None
 			try:
@@ -117,7 +122,7 @@ def commit(members, dn):
 	if len(mlist) > 0:
 		l.modify_s(dn, mlist)
 
-	
+cfg = None	
 def main():
 	global l	
 	
@@ -171,6 +176,9 @@ if __name__ == "__main__":
 		config["binddn"] = cfgfile.userdn
 		config["base"] = cfgfile.baseDN
 		config["sync"] = cfgfile.sync_vd
+		
+		global cfg
+		cfg = cfgfile
 	
 	read_cfg()
 	
