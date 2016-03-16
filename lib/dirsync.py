@@ -22,7 +22,7 @@ def member_delete(ldapconn, target_group):
 	"""
 	pass
 
-def member_copy(ldapconn, cnlist, target_group):
+def member_copy(ldapconn, cnlist, target_group, src_attr="member", tgt_attr="member"):
 	""" this methods copies members from one group to another. 
 	    
 	    member in the target group which are not in the src group will remain in the target grp.
@@ -40,10 +40,10 @@ def member_copy(ldapconn, cnlist, target_group):
 	
 	# extract existing members
 	res = r[0][1]
-	if "member" not in res:
+	if src_attr not in res:
 		tgt_list = []
 	else:
-		tgt_list = res["member"]
+		tgt_list = res[src_attr]
 	
 	ret = {
 		"method": "copy",
@@ -62,7 +62,7 @@ def member_copy(ldapconn, cnlist, target_group):
 			ret["added"] += 1
 	
 	# create mod list
-	mlist = modlist.modifyModlist({'member':tgt_list}, {'member':new_member})
+	mlist = modlist.modifyModlist({tgt_attr: tgt_list}, {tgt_attr: new_member})
 	
 	# commit if the modlist is not empty
 	ret["new_length"] = ret["old_length"]
@@ -77,7 +77,7 @@ def member_copy(ldapconn, cnlist, target_group):
 	
 	return ret
 	
-def member_sync(ldapconn, cnlist, target_group, preserveGroupMemebers=True):
+def member_sync(ldapconn, cnlist, target_group, preserveGroupMemebers=True, src_attr="member", tgt_attr="member"):
 	""" this methods syncs members from one group to another. 
 	    
 	    member in the target group which are not in the src group will be removed. 
@@ -96,10 +96,10 @@ def member_sync(ldapconn, cnlist, target_group, preserveGroupMemebers=True):
 	
 	# extract existing members
 	res = r[0][1]
-	if "member" not in res:
+	if src_attr not in res:
 		tgt_list = []
 	else:
-		tgt_list = res["member"]
+		tgt_list = res[src_attr]
 	
 	ret = {
 		"method": "sync",
@@ -125,7 +125,7 @@ def member_sync(ldapconn, cnlist, target_group, preserveGroupMemebers=True):
 	cnlist = cnlist + grp_member
 	
 	# create mod list
-	mlist = modlist.modifyModlist({'member':tgt_list}, {'member':cnlist})
+	mlist = modlist.modifyModlist({tgt_attr: tgt_list}, {tgt_attr: cnlist})
 	
 	# commit if the modlist is not empty
 	ret["new_length"] = ret["old_length"]

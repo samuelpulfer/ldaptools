@@ -12,6 +12,8 @@ sync = [
 		"from": "(&(cn=MQ_ANA_LA)(objectClass=group))", 
 		"to": "CN=MQ_B_U_Anaesthesiologie-Aerzte-LA,OU=Business,OU=Groups,OU=MQInf,OU=USB,DC=ms,DC=uhbs,DC=ch",
 		"method": "sync", # sync|copy|delete
+		"targetAttribute": "member",
+		"sourceAttribute": "member"
 	},
 	{
 		"from": "(&(cn=MQ_ANA_OA)(objectClass=group))", 
