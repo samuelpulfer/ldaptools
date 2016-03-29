@@ -149,6 +149,7 @@ if __name__ == "__main__":
 		for r in res:
 			if r[0] == None: # skip ldap referers
 				continue
+			
 			try:
 				cnlist = cnlist + r[1]["member"]
 			except:
@@ -162,9 +163,17 @@ if __name__ == "__main__":
 		#from pprint import pprint
 		#pprint(entry)
 		
+		final_cn = []
+		for e in cnlist:
+			if e[0:10] != "CN=MQ_ANA_":
+				final_cn = final_cn + [e]
+		
 		if entry["method"] == "sync":
 			# copy all members from src to target, deleting everything not in src
-			ret = dirsync.member_sync(l, cnlist, entry["to"])
+			#import pprint
+			#print entry["to"]
+			#pprint.pprint(final_cn)
+			ret = dirsync.member_sync(l, final_cn, entry["to"])
 		elif entry["method"] == "copy":
 			# copy all from src to tgt, preserving existing members in tgt
 			ret = dirsync.member_copy(l, cnlist, entry["to"])
